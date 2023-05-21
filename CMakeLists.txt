@@ -15,9 +15,9 @@ target_include_directories(stack_example PUBLIC "include")
 target_sources(stack_example PRIVATE "stack.c" "main.c")
 
 # Add source to the tester
-#add_executable (stack_test)
-#target_include_directories(stack_test PUBLIC "include")
-#target_sources(stack_test PRIVATE "stack.c" "stack_test.c")
+add_executable (stack_test)
+target_include_directories(stack_test PUBLIC "include")
+target_sources(stack_test PRIVATE "stack.c" "stack_test.c")
 
 # Add source to the library
 add_library(stack SHARED "stack.c")

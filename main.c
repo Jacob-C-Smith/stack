@@ -1,24 +1,37 @@
+// Standard library
 #include <stdio.h>
 
+// Include
 #include <stack/stack.h>
 
+// Entry point
 int main ( int argc, const char *argv[] )
 {
+
+	// Initialized data
 	stack *p_stack = 0;
 	void  *first   = 0;
 
-	construct_stack(&p_stack, 2);
+	// Construct a stack
+	stack_construct(&p_stack, 2);// TOP - null  - null  - BOTTOM
 
-	stack_push(p_stack, 0x123);
-	stack_push(p_stack, 0x456);
-	stack_push(p_stack, 0x789);
+	// Push some values onto the stack
+	stack_push(p_stack, (void *) 0x123);// TOP - null  - 0x123 - BOTTOM
+	stack_push(p_stack, (void *) 0x456);// TOP - 0x456 - 0x123 - BOTTOM
 
-	stack_pop(p_stack, &first);
-	stack_pop(p_stack, &first);
-	stack_pop(p_stack, &first);
-	stack_pop(p_stack, &first);
+	// Cause a stack overflow
+	stack_push(p_stack, (void *) 0x789);// TOP - 0x456 - 0x123 - BOTTOM
 
-	destroy_stack(&p_stack);
+	// Pop some values off the stack
+	stack_pop(p_stack, &first);// TOP - null  - 0x123 - BOTTOM	
+	stack_pop(p_stack, &first);// TOP - null  - null  - BOTTOM
 
+	// Cause a stack underflow
+	stack_pop(p_stack, &first);// TOP - null  - null  - BOTTOM
+
+	// Destroy the stack
+	stack_destroy(&p_stack);
+
+	// Success
 	return EXIT_SUCCESS;
 }

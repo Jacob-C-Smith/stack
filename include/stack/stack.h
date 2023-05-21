@@ -1,19 +1,27 @@
+/** !
+ * Include header for stack library
+ * 
+ * @file stack/stack.h 
+ * 
+ * @author Jacob Smith 
+ */
 
-// Preprocessor directives
+// Include guard
 #pragma once
 
-// Includes
+// Standard library
 #include <stdio.h>
 #include <stdlib.h>
 
-// Struct definitions
-struct stack_s
-{
-	size_t           stack_size;
-	size_t           stack_offset;
-	void           **stack_data;
-	struct stack_s  *next;
-};
+// Platform dependent macros
+#ifdef _WIN64
+#define DLLEXPORT extern __declspec(dllexport)
+#else
+#define DLLEXPORT
+#endif
+
+// Forward declarations
+struct stack_s;
 
 // Type definitions
 typedef struct stack_s stack;
@@ -24,11 +32,11 @@ typedef struct stack_s stack;
  * 
  * @param pp_stack : ret
  * 
- * @sa destroy_stack
+ * @sa stack_destroy
  * 
  * @return 1 on success, 0 on error
 */
-int create_stack ( stack **pp_stack );
+DLLEXPORT int stack_create ( stack **pp_stack );
 
 // Constructors 
 /** !
@@ -36,36 +44,24 @@ int create_stack ( stack **pp_stack );
  * 
  * @param pp_stack : ret
  * 
- * @sa destroy_stack
+ * @sa stack_destroy
  * 
  * @return 1 on success, 0 on error
 */
-int construct_stack ( stack **pp_stack, size_t size );
+DLLEXPORT int stack_construct ( stack **pp_stack, size_t size );
 
-/** !
- * Construct a stack frame from a stack
- * 
- * @param p_base : the base of the stack
- * @param ret : return
- * 
- * @sa destroy_stack
- * 
- * @return 1 on success, 0 on error
-*/
-int construct_stack_frame ( stack *p_base, stack *ret );
-
-// Mutators opeations
+// Mutators
 /** !
  * Push a value onto a stack
  * 
  * @param p_stack : the stack
- * @param p_operand : the value
+ * @param p_value : the value
  * 
  * @sa stack_pop
  * 
  * @return 1 on success, 0 on error
 */
-int stack_push ( stack *p_stack, const void *p_operand );
+DLLEXPORT int stack_push ( stack *p_stack, void *p_value );
 
 /** !
  * Pop a value off a stack
@@ -77,19 +73,20 @@ int stack_push ( stack *p_stack, const void *p_operand );
  * 
  * @return 1 on success, 0 on error
 */
-int stack_pop ( stack *p_stack, void **ret );
+DLLEXPORT int stack_pop ( stack *p_stack, void **ret );
 
+// Accessors
 /** !
- * Make a shallow copy of a stack
+ * Peek the top of the stack
  * 
  * @param p_stack : the stack
  * @param ret : return
  * 
- * @sa stack_push
+ * @sa stack_pop
  * 
  * @return 1 on success, 0 on error
 */
-int stack_copy ( stack *p_stack, stack **ret );
+DLLEXPORT int stack_peek ( stack *p_stack, void **ret );
 
 // Destructors
 /** !
@@ -101,4 +98,4 @@ int stack_copy ( stack *p_stack, stack **ret );
  * 
  * @return 1 on success, 0 on error
 */
-int destroy_stack ( stack **pp_stack );
+DLLEXPORT int stack_destroy ( stack **pp_stack );
