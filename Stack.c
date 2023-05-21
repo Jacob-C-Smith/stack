@@ -244,6 +244,63 @@ int stack_pop ( stack *p_stack , void **ret )
 	}
 }
 
+int stack_peek ( stack *p_stack , void **ret )
+{
+
+	// Argument check
+	{
+		#ifndef NDEBUG
+			if ( p_stack == (void *) 0 ) goto no_stack;
+			if ( ret     == (void *) 0 ) goto no_ret;
+		#endif
+	}
+
+	// Check for underflow
+	if ( p_stack->stack_offset < 1 )
+		goto stack_underflow;
+
+	// Peek the stack and write the return
+	*ret = p_stack->stack_data[p_stack->stack_offset-1];
+
+	// Success
+	return 1;
+
+	// Error handling
+	{
+
+		// Stack errors
+		{
+			stack_underflow:
+				#ifndef NDEBUG
+					printf("[stack] Stack Underflow!\n");
+				#endif
+
+				// Error
+				return 0;
+		}
+
+		// Argument errors
+		{
+			no_stack:
+				#ifndef NDEBUG
+					printf("[stack] Null pointer provided for \"p_stack\" in call to function \"%s\"\n", __FUNCSIG__);
+				#endif
+
+				// Error
+				return 0;
+
+			no_ret:
+				#ifndef NDEBUG
+					printf("[stack] Null pointer provided for \"ret\" in call to function \"%s\"\n", __FUNCSIG__);
+				#endif
+
+				// Error
+				return 0;
+		}
+	}
+}
+
+
 int destroy_stack ( stack **pp_stack )
 {
 
