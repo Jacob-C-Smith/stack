@@ -12,28 +12,93 @@ struct stack_s
 	size_t           stack_size;
 	size_t           stack_offset;
 	void           **stack_data;
-	struct stack_s   *next;
-
+	struct stack_s  *next;
 };
 
 // Type definitions
 typedef struct stack_s stack;
 
 // Allocators
-int create_stack          ( stack **pp_stack );
+/** !
+ * Allocate memory for a stack
+ * 
+ * @param pp_stack : ret
+ * 
+ * @sa destroy_stack
+ * 
+ * @return 1 on success, 0 on error
+*/
+int create_stack ( stack **pp_stack );
 
 // Constructors 
-int construct_stack       ( stack **pp_stack, size_t  size );
-int construct_stack_frame ( stack  *p_base  , stack  *ret );
+/** !
+ * Construct a stack of a specified size
+ * 
+ * @param pp_stack : ret
+ * 
+ * @sa destroy_stack
+ * 
+ * @return 1 on success, 0 on error
+*/
+int construct_stack ( stack **pp_stack, size_t size );
 
-// Stack opeations
-int stack_push      ( stack  *p_stack, const void  *p_operand );
-int stack_pop       ( stack  *p_stack, void       **ret );
-int stack_copy      ( stack  *p_stack, stack      **ret );
-int stack_duplicate ( stack  *p_stack, const void  *p_operand );
-int stack_peek      ( stack  *p_stack, void       **ret       );
-int stack_swap      ( stack  *p_stack, const void  *p_operand );
-int stack_rotate    ( stack  *p_stack, const void  *p_operand );
+/** !
+ * Construct a stack frame from a stack
+ * 
+ * @param p_base : the base of the stack
+ * @param ret : return
+ * 
+ * @sa destroy_stack
+ * 
+ * @return 1 on success, 0 on error
+*/
+int construct_stack_frame ( stack *p_base, stack *ret );
 
-// Deallocators
-int destroy_stack   ( stack  *p_stack );
+// Mutators opeations
+/** !
+ * Push a value onto a stack
+ * 
+ * @param p_stack : the stack
+ * @param p_operand : the value
+ * 
+ * @sa stack_pop
+ * 
+ * @return 1 on success, 0 on error
+*/
+int stack_push ( stack *p_stack, const void *p_operand );
+
+/** !
+ * Pop a value off a stack
+ * 
+ * @param p_stack : the stack
+ * @param ret : return
+ * 
+ * @sa stack_push
+ * 
+ * @return 1 on success, 0 on error
+*/
+int stack_pop ( stack *p_stack, void **ret );
+
+/** !
+ * Make a shallow copy of a stack
+ * 
+ * @param p_stack : the stack
+ * @param ret : return
+ * 
+ * @sa stack_push
+ * 
+ * @return 1 on success, 0 on error
+*/
+int stack_copy ( stack *p_stack, stack **ret );
+
+// Destructors
+/** !
+ * Deallocate a stack
+ * 
+ * @param pp_stack : pointer to stack pointer
+ * 
+ * @sa stack_create
+ * 
+ * @return 1 on success, 0 on error
+*/
+int destroy_stack ( stack **pp_stack );

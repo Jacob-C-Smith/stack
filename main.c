@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include <Stack/Stack.h>
+#include <stack/stack.h>
 
 int main ( int argc, const char *argv[] )
 {
@@ -18,7 +18,7 @@ int main ( int argc, const char *argv[] )
 	stack_pop(p_stack, &first);
 	stack_pop(p_stack, &first);
 
-	destroy_stack(p_stack);
+	destroy_stack(&p_stack);
 
-	return 0;
+	return EXIT_SUCCESS;
 }
