@@ -1,9 +1,10 @@
-﻿cmake_minimum_required (VERSION 3.8)
+﻿cmake_minimum_required (VERSION 3.26)
 
 project ("stack")
 
 # Comment out for Debug mode
 set(IS_DEBUG_BUILD CMAKE_BUILD_TYPE STREQUAL "Debug")
+set(HAS_STACK true)
 
 if (${IS_DEBUG_BUILD})
     add_compile_definitions(NDEBUG)
