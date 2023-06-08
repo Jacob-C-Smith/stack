@@ -4,7 +4,10 @@ project ("stack")
 
 # Comment out for Debug mode
 set(IS_DEBUG_BUILD CMAKE_BUILD_TYPE STREQUAL "Debug")
-set(HAS_STACK true)
+if ( NOT "${HAS_STACK}")
+    message("[stack] Adding stack project")
+    set(HAS_STACK true PARENT_SCOPE)
+endif()
 
 if (${IS_DEBUG_BUILD})
     add_compile_definitions(NDEBUG)
