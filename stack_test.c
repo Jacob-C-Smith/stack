@@ -79,7 +79,7 @@ int main ( int argc, const char* argv[] )
     run_tests();
 
     // Success
-    return EXIT_SUCCESS;
+    return ( total_passes == total_tests ) ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
 int run_tests ( void )
