@@ -5,22 +5,9 @@
  * 
  * @author Jacob Smith
  */
+
+// Include
 #include <stack/stack.h>
-
-// Platform dependent includes
-#ifdef _WIN64
-#include <windows.h>
-#include <process.h>
-#else
-#include <pthread.h>
-#endif
-
-// Platform dependent macros
-#ifdef _WIN64
-#define mutex_t HANDLE
-#else
-#define mutex_t pthread_mutex_t
-#endif
 
 // Structures
 struct stack_s
@@ -28,53 +15,8 @@ struct stack_s
 	size_t    stack_size;   // How big is the stack
 	size_t    stack_offset; // How many elements are in the stack 
 	void    **stack_data;   // The stack elements
-	mutex_t   lock;         // Locked when reading/writing values
+	mutex     _lock;        // Locked when reading/writing values
 };
-
-int create_mutex ( mutex_t *p_mutex )
-{
-    #ifdef _WIN64
-        *p_mutex = CreateMutex(0, FALSE, 0);
-        return ( p_mutex != 0 );
-    #else
-        return ( pthread_mutex_init(p_mutex, NULL) == 0 );
-    #endif
-
-    return 0;
-}
-
-int lock_mutex   ( mutex_t *p_mutex )
-{
-    #ifdef _WIN64
-        return ( WaitForSingleObject(*p_mutex, INFINITE) == WAIT_FAILED ? 0 : 1 );
-    #else
-        return ( pthread_mutex_lock(p_mutex) == 0 );
-    #endif
-
-    return 0;
-}
-
-int unlock_mutex ( mutex_t *p_mutex )
-{
-    #ifdef _WIN64
-        return ReleaseMutex(*p_mutex);
-    #else
-        return ( pthread_mutex_unlock( p_mutex ) == 0 );
-    #endif
-
-    return 0;
-}
-
-int destroy_mutex ( mutex_t *p_mutex )
-{
-    #ifdef _WIN64
-        return ( CloseHandle(*p_mutex) );
-    #else
-        return ( pthread_mutex_destroy(p_mutex) == 0 );
-    #endif
-
-    return 0;
-}
 
 int stack_create ( stack **pp_stack )
 {
@@ -158,8 +100,8 @@ int stack_construct ( stack **pp_stack, size_t size )
 	p_stack->stack_size = size;
 
 	// Create a mutex
-    if ( create_mutex(&p_stack->lock) == 0 )
-        goto failed_to_create_mutex;
+    if ( mutex_create(&p_stack->_lock) == 0 )
+        goto failed_to_mutex_create;
 
 	// Success
 	return 1;
@@ -196,7 +138,7 @@ int stack_construct ( stack **pp_stack, size_t size )
 				// Error
 				return 0;
 
-			failed_to_create_mutex:
+			failed_to_mutex_create:
                 #ifndef NDEBUG
                     printf("[stack] Failed to create mutex in call to function \"%s\"\n", __FUNCTION__);
                 #endif
@@ -235,13 +177,13 @@ int stack_push ( stack *p_stack, void *p_value )
 		goto stack_overflow;
 
 	// Lock
-    lock_mutex(&p_stack->lock);
+    mutex_lock(p_stack->_lock);
 
 	// Push the data onto the stack
 	p_stack->stack_data[p_stack->stack_offset++] = p_value;
 
 	// Unlock
-    unlock_mutex(&p_stack->lock);
+    mutex_unlock(p_stack->_lock);
 
 	// Success
 	return 1;
@@ -298,7 +240,7 @@ int stack_pop ( stack *p_stack, void **ret )
 		goto stack_underflow;
 
 	// Lock
-	lock_mutex(&p_stack->lock);
+	mutex_lock(p_stack->_lock);
 
 	// Return the value to the caller
 	if ( ret )
@@ -311,7 +253,7 @@ int stack_pop ( stack *p_stack, void **ret )
 		--p_stack->stack_offset;
 
 	// Unlock
-	unlock_mutex(&p_stack->lock);
+	mutex_unlock(p_stack->_lock);
 
 	// Success
 	return 1;
@@ -367,13 +309,13 @@ int stack_peek ( stack *p_stack, void **ret )
 		goto stack_underflow;
 
 	// Lock
-	lock_mutex(&p_stack->lock);
+	mutex_lock(p_stack->_lock);
 
 	// Peek the stack and write the return
 	*ret = p_stack->stack_data[p_stack->stack_offset-1];
 	
 	// Unlock
-	unlock_mutex(&p_stack->lock);
+	mutex_unlock(p_stack->_lock);
 
 	// Success
 	return 1;
@@ -431,19 +373,19 @@ int stack_destroy ( stack **pp_stack )
 		goto pointer_to_null_pointer;
 
 	// Lock
-    lock_mutex(&p_stack->lock);
+    mutex_lock(p_stack->_lock);
 
 	// No more pointer for caller
 	*pp_stack = 0;
 
 	// Unlock
-    unlock_mutex(&p_stack->lock);
+    mutex_unlock(p_stack->_lock);
 
 	// Free stack data
 	free(p_stack->stack_data);
 
 	// Destroy the mutex
-    destroy_mutex(&p_stack->lock);
+    mutex_destroy(&p_stack->_lock);
 	
 	// Free the stack
 	free(p_stack);
