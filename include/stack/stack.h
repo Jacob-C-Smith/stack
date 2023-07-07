@@ -23,6 +23,11 @@
 #define DLLEXPORT
 #endif
 
+// Memory management macro
+#ifndef STACK_REALLOC
+#define STACK_REALLOC(p, sz) realloc(p,sz)
+#endif
+
 // Forward declarations
 struct stack_s;
 

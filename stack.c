@@ -22,18 +22,18 @@ int stack_create ( stack **pp_stack )
 {
 	
 	// Argument check
-	{
-		#ifndef NDEBUG
-			if ( pp_stack == (void *) 0 ) goto no_stack;
-		#endif
-	}
+	#ifndef NDEBUG
+		if ( pp_stack == (void *) 0 ) goto no_stack;
+	#endif
 
 	// Initialized data
-	stack *p_stack = calloc(1, sizeof(stack));
+	stack *p_stack = STACK_REALLOC(0, sizeof(stack));
 
 	// Error check
-	if ( p_stack == (void *) 0 )
-		goto no_mem;
+	if ( p_stack == (void *) 0 ) goto no_mem;
+
+	// Zero set
+	memset(p_stack, 0, sizeof(stack));
 
 	// Return a pointer to the caller
 	*pp_stack = p_stack;
@@ -72,36 +72,34 @@ int stack_construct ( stack **pp_stack, size_t size )
 {
 
 	// Argument check
-	{
-		#ifndef NDEBUG
-			if ( pp_stack == (void *) 0 ) goto no_stack;
-			if ( size < 1 ) goto no_size;
-		#endif
-	}
+	#ifndef NDEBUG
+		if ( pp_stack == (void *) 0 ) goto no_stack;
+		if ( size < 1 ) goto no_size;
+	#endif
 
 	// Initialized data
 	stack *p_stack = 0;
 
 	// Allocate a stack
-	if ( stack_create(pp_stack) == 0 ) 
-		goto failed_to_allocate_stack;
+	if ( stack_create(pp_stack) == 0 ) goto failed_to_allocate_stack;
 	
 	// Get a pointer to the stack
 	p_stack = *pp_stack;
 
 	// Allocate space for the stack
-	p_stack->stack_data = calloc(size, sizeof(void *));
+	p_stack->stack_data = STACK_REALLOC(0, size * sizeof(void *));
+
+	// Zero set
+	memset(p_stack->stack_data, 0, size * sizeof(void *));
 	
 	// Error check
-	if ( p_stack->stack_data == (void *) 0 )
-		goto no_mem;
+	if ( p_stack->stack_data == (void *) 0 ) goto no_mem;
 
 	// Set the size
 	p_stack->stack_size = size;
 
 	// Create a mutex
-    if ( mutex_create(&p_stack->_lock) == 0 )
-        goto failed_to_mutex_create;
+    if ( mutex_create(&p_stack->_lock) == 0 ) goto failed_to_mutex_create;
 
 	// Success
 	return 1;
@@ -165,16 +163,13 @@ int stack_push ( stack *p_stack, void *p_value )
 {
 
 	// Argument check
-	{
-		#ifndef NDEBUG
-			if ( p_stack == (void *) 0 ) goto no_stack;
-			if ( p_value == (void *) 0 ) goto no_value;
-		#endif
-	}
+	#ifndef NDEBUG
+		if ( p_stack == (void *) 0 ) goto no_stack;
+		if ( p_value == (void *) 0 ) goto no_value;
+	#endif
 
 	// Error checking
-	if ( p_stack->stack_size == p_stack->stack_offset )
-		goto stack_overflow;
+	if ( p_stack->stack_size == p_stack->stack_offset ) goto stack_overflow;
 
 	// Lock
     mutex_lock(p_stack->_lock);
@@ -221,23 +216,19 @@ int stack_push ( stack *p_stack, void *p_value )
 				// Error
 				return 0;
 		}
-}
+	}
 }
 
 int stack_pop ( stack *p_stack, void **ret )
 {
 
 	// Argument check
-	{
-		#ifndef NDEBUG
-			if ( p_stack == (void *) 0 ) goto no_stack;
-			
-		#endif
-	}
+	#ifndef NDEBUG
+		if ( p_stack == (void *) 0 ) goto no_stack;
+	#endif
 
 	// Error checking
-	if ( p_stack->stack_offset < 1 )
-		goto stack_underflow;
+	if ( p_stack->stack_offset < 1 ) goto stack_underflow;
 
 	// Lock
 	mutex_lock(p_stack->_lock);
@@ -297,16 +288,13 @@ int stack_peek ( stack *p_stack, void **ret )
 {
 
 	// Argument check
-	{
-		#ifndef NDEBUG
-			if ( p_stack == (void *) 0 ) goto no_stack;
-			if ( ret     == (void *) 0 ) goto no_ret;
-		#endif
-	}
+	#ifndef NDEBUG
+		if ( p_stack == (void *) 0 ) goto no_stack;
+		if ( ret     == (void *) 0 ) goto no_ret;
+	#endif
 
 	// Error checking
-	if ( p_stack->stack_offset < 1 )
-		goto stack_underflow;
+	if ( p_stack->stack_offset < 1 ) goto stack_underflow;
 
 	// Lock
 	mutex_lock(p_stack->_lock);
@@ -359,18 +347,15 @@ int stack_destroy ( stack **pp_stack )
 {
 
 	// Argument check
-	{
-		#ifndef NDEBUG
-			if ( pp_stack == (void *) 0 ) goto no_stack;
-		#endif
-	}
+	#ifndef NDEBUG
+		if ( pp_stack == (void *) 0 ) goto no_stack;
+	#endif
 
 	// Initialized data
 	stack *p_stack = *pp_stack;
 
 	// Error checking
-	if ( p_stack == (void *) 0 )
-		goto pointer_to_null_pointer;
+	if ( p_stack == (void *) 0 ) goto pointer_to_null_pointer;
 
 	// Lock
     mutex_lock(p_stack->_lock);
@@ -382,13 +367,13 @@ int stack_destroy ( stack **pp_stack )
     mutex_unlock(p_stack->_lock);
 
 	// Free stack data
-	free(p_stack->stack_data);
+	if ( STACK_REALLOC(p_stack->stack_data, 0) ) goto failed_to_free;
 
 	// Destroy the mutex
     mutex_destroy(&p_stack->_lock);
 	
 	// Free the stack
-	free(p_stack);
+	if ( STACK_REALLOC(p_stack, 0) ) goto failed_to_free;
 
 	// Success
 	return 1;
@@ -414,5 +399,16 @@ int stack_destroy ( stack **pp_stack )
 				// Error
 				return 0;
 		}
+
+		// Standard library errors
+        {
+            failed_to_free:
+                #ifndef NDEBUG
+                    printf("[Standard Library] Call to \"realloc\" returned an erroneous value in call to function \"%s\"\n", __FUNCTION__);
+                #endif
+
+                // Error
+                return 0;
+        }
 	}
 }
