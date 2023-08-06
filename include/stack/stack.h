@@ -44,7 +44,7 @@ typedef struct stack_s stack;
  * 
  * @return 1 on success, 0 on error
 */
-DLLEXPORT int stack_create ( stack **pp_stack );
+DLLEXPORT int stack_create ( const stack **pp_stack );
 
 // Constructors 
 /** !
@@ -56,7 +56,7 @@ DLLEXPORT int stack_create ( stack **pp_stack );
  * 
  * @return 1 on success, 0 on error
 */
-DLLEXPORT int stack_construct ( stack **pp_stack, size_t size );
+DLLEXPORT int stack_construct ( const stack **pp_stack, size_t size );
 
 // Mutators
 /** !
@@ -69,7 +69,7 @@ DLLEXPORT int stack_construct ( stack **pp_stack, size_t size );
  * 
  * @return 1 on success, 0 on error
 */
-DLLEXPORT int stack_push ( stack *p_stack, void *p_value );
+DLLEXPORT int stack_push ( stack *p_stack, const void *p_value );
 
 /** !
  * Pop a value off a stack
@@ -81,7 +81,7 @@ DLLEXPORT int stack_push ( stack *p_stack, void *p_value );
  * 
  * @return 1 on success, 0 on error
 */
-DLLEXPORT int stack_pop ( stack *p_stack, void **ret );
+DLLEXPORT int stack_pop ( stack *p_stack, const void **ret );
 
 // Accessors
 /** !
@@ -94,7 +94,7 @@ DLLEXPORT int stack_pop ( stack *p_stack, void **ret );
  * 
  * @return 1 on success, 0 on error
 */
-DLLEXPORT int stack_peek ( stack *p_stack, void **ret );
+DLLEXPORT int stack_peek ( const stack *p_stack, const void **ret );
 
 // Destructors
 /** !
@@ -106,4 +106,4 @@ DLLEXPORT int stack_peek ( stack *p_stack, void **ret );
  * 
  * @return 1 on success, 0 on error
 */
-DLLEXPORT int stack_destroy ( stack **pp_stack );
+DLLEXPORT int stack_destroy ( const stack **pp_stack );
