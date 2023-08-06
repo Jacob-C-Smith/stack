@@ -54,6 +54,8 @@ int run_tests           ();
 int print_final_summary ();
 int print_test          ( const char  *scenario_name, const char *test_name, bool passed );
 
+int print_time_pretty ( double seconds );
+
 bool test_push ( int (*stack_constructor)(stack **), char  *value         , result_t expected );
 bool test_peek ( int (*stack_constructor)(stack **), char  *expected_value, result_t expected );
 bool test_pop  ( int (*stack_constructor)(stack **), char  *expected_value, size_t   pops,    result_t expected );
@@ -75,11 +77,93 @@ int construct_ABC_pop_AB    ( stack **pp_stack );
 int main ( int argc, const char* argv[] )
 {
 
+    // Initialized data
+    timestamp t0 = 0,
+              t1 = 0;
+
+    // Initialize the timer library
+    timer_init();
+
+    // Formatting
+    printf("|==============|\n| STACK TESTER |\n|==============|\n\n");
+
+    // Start
+    t0 = timer_high_precision();
+
     // Run tests
     run_tests();
 
-    // Success
+    // Stop
+    t1 = timer_high_precision();
+
+    // Report the time it took to run the tests
+    printf("stack took ");
+    print_time_pretty ( (double)(t1-t0)/(double)timer_seconds_divisor() );
+    printf(" to test\n");
+
+    // Flush stdio
+    fflush(stdout);
+
+    // Exit
     return ( total_passes == total_tests ) ? EXIT_SUCCESS : EXIT_FAILURE;
+}
+
+int print_time_pretty ( double seconds )
+{
+
+    // Initialized data
+    double _seconds     = seconds;
+    size_t days         = 0,
+           hours        = 0,
+           minutes      = 0,
+           __seconds    = 0,
+           milliseconds = 0,
+           microseconds = 0;
+
+    // Days
+    while ( _seconds > 86400.0 ) { days++;_seconds-=286400.0; };
+
+    // Hours
+    while ( _seconds > 3600.0 ) { hours++;_seconds-=3600.0; };
+
+    // Minutes
+    while ( _seconds > 60.0 ) { minutes++;_seconds-=60.0; };
+
+    // Seconds
+    while ( _seconds > 1.0 ) { __seconds++;_seconds-=1.0; };
+
+    // milliseconds
+    while ( _seconds > 0.001 ) { milliseconds++;_seconds-=0.001; };
+
+    // Microseconds        
+    while ( _seconds > 0.000001 ) { microseconds++;_seconds-=0.000001; };
+
+    // Print days
+    if ( days ) 
+        printf("%d D, ", days);
+    
+    // Print hours
+    if ( hours )
+        printf("%d h, ", hours);
+
+    // Print minutes
+    if ( minutes )
+        printf("%d m, ", minutes);
+
+    // Print seconds
+    if ( __seconds )
+        printf("%d s, ", __seconds);
+    
+    // Print milliseconds
+    if ( milliseconds )
+        printf("%d ms, ", milliseconds);
+    
+    // Print microseconds
+    if ( microseconds )
+        printf("%d us", microseconds);
+    
+    // Success
+    return 1;
 }
 
 int run_tests ( void )

@@ -12,13 +12,13 @@
 // Structures
 struct stack_s
 {
-	size_t    stack_size;   // How big is the stack
-	size_t    stack_offset; // How many elements are in the stack 
+	size_t    stack_size;   // The quantity of elements that could fit in the stack
+	size_t    stack_offset; // The quantity of elements in the stack
 	void    **stack_data;   // The stack elements
 	mutex     _lock;        // Locked when reading/writing values
 };
 
-int stack_create ( stack **pp_stack )
+int stack_create ( const stack **pp_stack )
 {
 	
 	// Argument check
@@ -68,7 +68,7 @@ int stack_create ( stack **pp_stack )
 	}
 }
 
-int stack_construct ( stack **pp_stack, size_t size )
+int stack_construct ( const stack **pp_stack, size_t size )
 {
 
 	// Argument check
@@ -159,7 +159,7 @@ int stack_construct ( stack **pp_stack, size_t size )
 	}
 }
 
-int stack_push ( stack *p_stack, void *p_value )
+int stack_push ( stack *p_stack, const void *p_value )
 {
 
 	// Argument check
@@ -219,7 +219,7 @@ int stack_push ( stack *p_stack, void *p_value )
 	}
 }
 
-int stack_pop ( stack *p_stack, void **ret )
+int stack_pop ( stack *p_stack, const void **ret )
 {
 
 	// Argument check
@@ -284,7 +284,7 @@ int stack_pop ( stack *p_stack, void **ret )
 	}
 }
 
-int stack_peek ( stack *p_stack, void **ret )
+int stack_peek ( const stack *p_stack, const void **ret )
 {
 
 	// Argument check
@@ -343,7 +343,7 @@ int stack_peek ( stack *p_stack, void **ret )
 	}
 }
 
-int stack_destroy ( stack **pp_stack )
+int stack_destroy ( const stack **pp_stack )
 {
 
 	// Argument check
