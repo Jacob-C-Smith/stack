@@ -18,7 +18,7 @@ struct stack_s
 	mutex     _lock;        // Locked when reading/writing values
 };
 
-int stack_create ( const stack **pp_stack )
+int stack_create ( const stack **const pp_stack )
 {
 	
 	// Argument check
@@ -68,7 +68,7 @@ int stack_create ( const stack **pp_stack )
 	}
 }
 
-int stack_construct ( const stack **pp_stack, size_t size )
+int stack_construct ( stack **const pp_stack, size_t size )
 {
 
 	// Argument check
@@ -159,7 +159,7 @@ int stack_construct ( const stack **pp_stack, size_t size )
 	}
 }
 
-int stack_push ( stack *p_stack, const void *p_value )
+int stack_push ( stack *const p_stack, void *const p_value )
 {
 
 	// Argument check
@@ -219,7 +219,7 @@ int stack_push ( stack *p_stack, const void *p_value )
 	}
 }
 
-int stack_pop ( stack *p_stack, const void **ret )
+int stack_pop ( stack *const p_stack, const void **const ret )
 {
 
 	// Argument check
@@ -284,7 +284,7 @@ int stack_pop ( stack *p_stack, const void **ret )
 	}
 }
 
-int stack_peek ( const stack *p_stack, const void **ret )
+int stack_peek ( const stack *const p_stack, const void **const ret )
 {
 
 	// Argument check
@@ -343,7 +343,7 @@ int stack_peek ( const stack *p_stack, const void **ret )
 	}
 }
 
-int stack_destroy ( const stack **pp_stack )
+int stack_destroy ( stack **const pp_stack )
 {
 
 	// Argument check
