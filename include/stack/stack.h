@@ -69,7 +69,7 @@ DLLEXPORT int stack_construct ( stack **const pp_stack, size_t size );
  * 
  * @return 1 on success, 0 on error
 */
-DLLEXPORT int stack_push ( stack * const p_stack, const void *const p_value );
+DLLEXPORT int stack_push ( stack * const p_stack, void *const p_value );
 
 /** !
  * Pop a value off a stack
