@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.0)
 
 include(FeatureSummary)
 set_package_properties(STACK PROPERTIES
-    URL "https://www.g10.app/ADT/stack"
+    URL "https://g10.app/status/#abstract_data_i"
     DESCRIPTION "stack ADT"
 )
 
