@@ -432,7 +432,7 @@ bool test_peek ( int (*stack_constructor)(stack **), char *expected_value, resul
     // Initialized data
     result_t    result       = 0;
     stack      *p_stack      = 0;
-    const void *result_value = 0;
+    void       *result_value = 0;
 
     // Build the stack
     stack_constructor(&p_stack);
@@ -458,7 +458,7 @@ bool test_pop ( int (*stack_constructor)(stack **), char *expected_value, size_t
     // Initialized data
     result_t    result       = 0;
     stack      *p_stack      = 0;
-    const void *result_value = 0;
+    void       *result_value = 0;
 
     // Build the stack
     stack_constructor(&p_stack);
