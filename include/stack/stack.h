@@ -11,6 +11,7 @@
 
 // Standard library
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
 // sync submodule
@@ -56,7 +57,7 @@ DLLEXPORT int stack_create ( const stack **const pp_stack );
  * 
  * @return 1 on success, 0 on error
 */
-DLLEXPORT int stack_construct ( stack **const pp_stack, size_t size );
+DLLEXPORT int stack_construct ( const stack **const pp_stack, size_t size );
 
 // Mutators
 /** !
@@ -69,7 +70,7 @@ DLLEXPORT int stack_construct ( stack **const pp_stack, size_t size );
  * 
  * @return 1 on success, 0 on error
 */
-DLLEXPORT int stack_push ( stack * const p_stack, void *const p_value );
+DLLEXPORT int stack_push ( stack *const p_stack, const void *const p_value );
 
 /** !
  * Pop a value off a stack
@@ -81,7 +82,7 @@ DLLEXPORT int stack_push ( stack * const p_stack, void *const p_value );
  * 
  * @return 1 on success, 0 on error
 */
-DLLEXPORT int stack_pop ( stack * const p_stack, const void **const ret );
+DLLEXPORT int stack_pop ( stack *const p_stack, const void **const ret );
 
 // Accessors
 /** !
@@ -94,7 +95,7 @@ DLLEXPORT int stack_pop ( stack * const p_stack, const void **const ret );
  * 
  * @return 1 on success, 0 on error
 */
-DLLEXPORT int stack_peek ( const stack *const constp_stack, const void **const ret );
+DLLEXPORT int stack_peek ( const stack *const p_stack, const void **const ret );
 
 // Destructors
 /** !

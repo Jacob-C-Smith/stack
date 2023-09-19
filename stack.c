@@ -12,19 +12,17 @@
 // Structures
 struct stack_s
 {
-	size_t    stack_size;   // The quantity of elements that could fit in the stack
-	size_t    stack_offset; // The quantity of elements in the stack
-	void    **stack_data;   // The stack elements
-	mutex     _lock;        // Locked when reading/writing values
+	size_t    _size;   // The quantity of elements that could fit in the stack
+	size_t    _offset; // The quantity of elements in the stack
+	void    **_data;   // The stack elements
+	mutex     _lock;   // Locked when reading/writing values
 };
 
 int stack_create ( const stack **const pp_stack )
 {
 	
 	// Argument check
-	#ifndef NDEBUG
-		if ( pp_stack == (void *) 0 ) goto no_stack;
-	#endif
+	if ( pp_stack == (void *) 0 ) goto no_stack;
 
 	// Initialized data
 	stack *p_stack = STACK_REALLOC(0, sizeof(stack));
@@ -68,14 +66,12 @@ int stack_create ( const stack **const pp_stack )
 	}
 }
 
-int stack_construct ( stack **const pp_stack, size_t size )
+int stack_construct ( const stack **const pp_stack, size_t size )
 {
 
 	// Argument check
-	#ifndef NDEBUG
-		if ( pp_stack == (void *) 0 ) goto no_stack;
-		if ( size < 1 ) goto no_size;
-	#endif
+	if ( pp_stack == (void *) 0 ) goto no_stack;
+	if ( size < 1 ) goto no_size;
 
 	// Initialized data
 	stack *p_stack = 0;
@@ -87,16 +83,16 @@ int stack_construct ( stack **const pp_stack, size_t size )
 	p_stack = *pp_stack;
 
 	// Allocate space for the stack
-	p_stack->stack_data = STACK_REALLOC(0, size * sizeof(void *));
+	p_stack->_data = STACK_REALLOC(0, size * sizeof(void *));
 
 	// Zero set
-	memset(p_stack->stack_data, 0, size * sizeof(void *));
+	memset(p_stack->_data, 0, size * sizeof(void *));
 	
 	// Error check
-	if ( p_stack->stack_data == (void *) 0 ) goto no_mem;
+	if ( p_stack->_data == (void *) 0 ) goto no_mem;
 
 	// Set the size
-	p_stack->stack_size = size;
+	p_stack->_size = size;
 
 	// Create a mutex
     if ( mutex_create(&p_stack->_lock) == 0 ) goto failed_to_mutex_create;
@@ -159,23 +155,21 @@ int stack_construct ( stack **const pp_stack, size_t size )
 	}
 }
 
-int stack_push ( stack *const p_stack, void *const p_value )
+int stack_push ( stack *const p_stack, const void *const p_value )
 {
 
 	// Argument check
-	#ifndef NDEBUG
-		if ( p_stack == (void *) 0 ) goto no_stack;
-		if ( p_value == (void *) 0 ) goto no_value;
-	#endif
+	if ( p_stack == (void *) 0 ) goto no_stack;
+	if ( p_value == (void *) 0 ) goto no_value;
 
 	// Error checking
-	if ( p_stack->stack_size == p_stack->stack_offset ) goto stack_overflow;
+	if ( p_stack->_size == p_stack->_offset ) goto stack_overflow;
 
 	// Lock
     mutex_lock(p_stack->_lock);
 
 	// Push the data onto the stack
-	p_stack->stack_data[p_stack->stack_offset++] = p_value;
+	p_stack->_data[p_stack->_offset++] = p_value;
 
 	// Unlock
     mutex_unlock(p_stack->_lock);
@@ -223,12 +217,10 @@ int stack_pop ( stack *const p_stack, const void **const ret )
 {
 
 	// Argument check
-	#ifndef NDEBUG
-		if ( p_stack == (void *) 0 ) goto no_stack;
-	#endif
+	if ( p_stack == (void *) 0 ) goto no_stack;
 
 	// Error checking
-	if ( p_stack->stack_offset < 1 ) goto stack_underflow;
+	if ( p_stack->_offset < 1 ) goto stack_underflow;
 
 	// Lock
 	mutex_lock(p_stack->_lock);
@@ -237,11 +229,11 @@ int stack_pop ( stack *const p_stack, const void **const ret )
 	if ( ret )
 
 		// Pop the stack and write the return
-		*ret = p_stack->stack_data[--p_stack->stack_offset];
+		*ret = p_stack->_data[--p_stack->_offset];
 	
 	// Don't return a value to the caller
 	else
-		--p_stack->stack_offset;
+		--p_stack->_offset;
 
 	// Unlock
 	mutex_unlock(p_stack->_lock);
@@ -288,19 +280,17 @@ int stack_peek ( const stack *const p_stack, const void **const ret )
 {
 
 	// Argument check
-	#ifndef NDEBUG
-		if ( p_stack == (void *) 0 ) goto no_stack;
-		if ( ret     == (void *) 0 ) goto no_ret;
-	#endif
+	if ( p_stack == (void *) 0 ) goto no_stack;
+	if ( ret     == (void *) 0 ) goto no_ret;
 
 	// Error checking
-	if ( p_stack->stack_offset < 1 ) goto stack_underflow;
+	if ( p_stack->_offset < 1 ) goto stack_underflow;
 
 	// Lock
 	mutex_lock(p_stack->_lock);
 
 	// Peek the stack and write the return
-	*ret = p_stack->stack_data[p_stack->stack_offset-1];
+	*ret = p_stack->_data[p_stack->_offset-1];
 	
 	// Unlock
 	mutex_unlock(p_stack->_lock);
@@ -347,9 +337,7 @@ int stack_destroy ( stack **const pp_stack )
 {
 
 	// Argument check
-	#ifndef NDEBUG
-		if ( pp_stack == (void *) 0 ) goto no_stack;
-	#endif
+	if ( pp_stack == (void *) 0 ) goto no_stack;
 
 	// Initialized data
 	stack *p_stack = *pp_stack;
@@ -367,7 +355,7 @@ int stack_destroy ( stack **const pp_stack )
     mutex_unlock(p_stack->_lock);
 
 	// Free stack data
-	if ( STACK_REALLOC(p_stack->stack_data, 0) ) goto failed_to_free;
+	if ( STACK_REALLOC(p_stack->_data, 0) ) goto failed_to_free;
 
 	// Destroy the mutex
     mutex_destroy(&p_stack->_lock);
