@@ -58,3 +58,9 @@ build/
 
 desktop.ini
 *.ico
+*.vcxproj
+*.vcxproj.filters
+CMakeCache.txt
+cmake_install.cmake
+CMakeFiles/
+*.sln
