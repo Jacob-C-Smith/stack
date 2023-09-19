@@ -13,7 +13,12 @@ set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/extern/)
 if(MSVC)
     # TODO
 else()
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -Wall -Wextra -Wpedantic -Weverything -Wno-declaration-after-statement -Ofast")
+
+    # For clang
+    #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -Wall -Wextra -Wpedantic -Weverything -Wno-declaration-after-statement -Ofast")
+
+    # For GCC
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -Wall -Wextra -Wpedantic -Wno-declaration-after-statement -O3")
 endif()
 
 # Comment out for Debug mode
