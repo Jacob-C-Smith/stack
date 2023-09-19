@@ -59,18 +59,18 @@
  ### Function definitions
  ```c 
 // Allocators
-int stack_create ( stack **pp_stack );
+int stack_create ( const stack **const pp_stack );
 
 // Constructors 
-int stack_construct ( stack **pp_stack, size_t size );
+int stack_construct ( const stack **const pp_stack, size_t size );
 
 // Mutators
-int stack_push ( stack *p_stack, void *p_value );
-int stack_pop ( stack *p_stack, void **ret );
+int stack_push ( stack *const p_stack, const void *const        p_value );
+int stack_pop  ( stack *const p_stack, const void *      *const ret );
 
 // Accessors
-int stack_peek ( stack *p_stack, void **ret );
+int stack_peek ( const stack *const p_stack, const void **const ret );
 
 // Destructors
-int stack_destroy ( stack **pp_stack );
- ```
+int stack_destroy ( stack **const pp_stack );
+```
