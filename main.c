@@ -8,9 +8,13 @@
 int main ( int argc, const char *argv[] )
 {
 
+	// Supress compiler warnings
+	(void) argc;
+	(void) argv;
+
 	// Initialized data
 	stack *p_stack = 0;
-	void  *first   = 0;
+	const void  *first   = 0;
 
 	// Construct a stack
 	stack_construct(&p_stack, 2);// TOP - null  - null  - BOTTOM

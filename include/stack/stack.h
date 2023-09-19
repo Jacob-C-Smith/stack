@@ -45,7 +45,7 @@ typedef struct stack_s stack;
  * 
  * @return 1 on success, 0 on error
 */
-DLLEXPORT int stack_create ( const stack **const pp_stack );
+DLLEXPORT int stack_create ( stack **const pp_stack );
 
 // Constructors 
 /** !
@@ -57,7 +57,7 @@ DLLEXPORT int stack_create ( const stack **const pp_stack );
  * 
  * @return 1 on success, 0 on error
 */
-DLLEXPORT int stack_construct ( const stack **const pp_stack, size_t size );
+DLLEXPORT int stack_construct ( stack **const pp_stack, size_t size );
 
 // Mutators
 /** !

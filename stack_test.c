@@ -81,6 +81,10 @@ int main ( int argc, const char* argv[] )
     timestamp t0 = 0,
               t1 = 0;
 
+    // Supress compiler warnings
+    (void) argc;
+    (void) argv;
+
     // Initialize the timer library
     timer_init();
 
@@ -140,27 +144,27 @@ int print_time_pretty ( double seconds )
 
     // Print days
     if ( days ) 
-        printf("%d D, ", days);
+        printf("%zd D, ", days);
     
     // Print hours
     if ( hours )
-        printf("%d h, ", hours);
+        printf("%zd h, ", hours);
 
     // Print minutes
     if ( minutes )
-        printf("%d m, ", minutes);
+        printf("%zd m, ", minutes);
 
     // Print seconds
     if ( __seconds )
-        printf("%d s, ", __seconds);
+        printf("%zd s, ", __seconds);
     
     // Print milliseconds
     if ( milliseconds )
-        printf("%d ms, ", milliseconds);
+        printf("%zd ms, ", milliseconds);
     
     // Print microseconds
     if ( microseconds )
-        printf("%d us", microseconds);
+        printf("%zd us", microseconds);
     
     // Success
     return 1;
@@ -426,9 +430,9 @@ bool test_peek ( int (*stack_constructor)(stack **), char *expected_value, resul
 {
 
     // Initialized data
-    result_t  result       = 0;
-    stack    *p_stack      = 0;
-    void     *result_value = 0;
+    result_t    result       = 0;
+    stack      *p_stack      = 0;
+    const void *result_value = 0;
 
     // Build the stack
     stack_constructor(&p_stack);
@@ -452,9 +456,9 @@ bool test_pop ( int (*stack_constructor)(stack **), char *expected_value, size_t
 {
 
     // Initialized data
-    result_t  result       = 0;
-    stack    *p_stack      = 0;
-    void     *result_value = 0;
+    result_t    result       = 0;
+    stack      *p_stack      = 0;
+    const void *result_value = 0;
 
     // Build the stack
     stack_constructor(&p_stack);

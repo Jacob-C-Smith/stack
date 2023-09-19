@@ -9,6 +9,13 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build)
 set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/extern/)
 
+# Set compiler warnings
+if(MSVC)
+    # TODO
+else()
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -Wall -Wextra -Wpedantic -Weverything -Wno-declaration-after-statement -Ofast")
+endif()
+
 # Comment out for Debug mode
 set(IS_DEBUG_BUILD CMAKE_BUILD_TYPE STREQUAL "Debug")
 
@@ -43,13 +50,13 @@ endif()
 # Add source to this project's executable.
 add_executable(stack_example "stack.c" "main.c")
 add_dependencies(stack_example sync)
-target_include_directories(stack_example PUBLIC "include")
+target_include_directories(stack_example PUBLIC include include/stack)
 target_link_libraries(stack_example sync)
 
 # Add source to the tester
 add_executable (stack_test "stack.c" "stack_test.c")
 add_dependencies(stack_test sync)
-target_include_directories(stack_test PUBLIC "include")
+target_include_directories(stack_test PUBLIC include include/stack ${CMAKE_SOURCE_DIR}/extern/sync/include/)
 target_link_libraries(stack_test sync)
 
 # Add source to the library

@@ -14,11 +14,11 @@ struct stack_s
 {
 	size_t    _size;   // The quantity of elements that could fit in the stack
 	size_t    _offset; // The quantity of elements in the stack
-	void    **_data;   // The stack elements
+	const void **_data;   // The stack elements
 	mutex     _lock;   // Locked when reading/writing values
 };
 
-int stack_create ( const stack **const pp_stack )
+int stack_create ( stack **const pp_stack )
 {
 	
 	// Argument check
@@ -66,7 +66,7 @@ int stack_create ( const stack **const pp_stack )
 	}
 }
 
-int stack_construct ( const stack **const pp_stack, size_t size )
+int stack_construct ( stack **const pp_stack, size_t size )
 {
 
 	// Argument check
@@ -260,14 +260,6 @@ int stack_pop ( stack *const p_stack, const void **const ret )
 			no_stack:
 				#ifndef NDEBUG
 					printf("[stack] Null pointer provided for \"p_stack\" in call to function \"%s\"\n", __FUNCSIG__);
-				#endif
-
-				// Error
-				return 0;
-
-			no_ret:
-				#ifndef NDEBUG
-					printf("[stack] Null pointer provided for \"ret\" in call to function \"%s\"\n", __FUNCSIG__);
 				#endif
 
 				// Error
