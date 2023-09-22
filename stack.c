@@ -46,7 +46,7 @@ int stack_create ( stack **const pp_stack )
 		{
 			no_stack:
 				#ifndef NDEBUG
-					printf("[stack] Null pointer provided for \"pp_stack\" in call to function \"%s\"\n", __FUNCSIG__);
+					printf("[stack] Null pointer provided for \"pp_stack\" in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -57,7 +57,7 @@ int stack_create ( stack **const pp_stack )
 		{
 			no_mem:
 				#ifndef NDEBUG
-					printf("[Standard Library] Failed to allocate memory in call to function \"%s\"\n", __FUNCSIG__);
+					printf("[Standard Library] Failed to allocate memory in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -107,7 +107,7 @@ int stack_construct ( stack **const pp_stack, size_t size )
 		{
 			no_stack:
 				#ifndef NDEBUG
-					printf("[stack] Null pointer provided for \"pp_stack\" in call to function \"%s\"\n", __FUNCSIG__);
+					printf("[stack] Null pointer provided for \"pp_stack\" in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -115,7 +115,7 @@ int stack_construct ( stack **const pp_stack, size_t size )
 
 			no_size:
 				#ifndef NDEBUG
-					printf("[stack] No size provided in call to function \"%s\"\n", __FUNCSIG__);
+					printf("[stack] No size provided in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -126,7 +126,7 @@ int stack_construct ( stack **const pp_stack, size_t size )
 		{
 			failed_to_allocate_stack:
 				#ifndef NDEBUG
-					printf("[stack] Failed to allocate memory in call to function \"%s\"\n", __FUNCSIG__);
+					printf("[stack] Failed to allocate memory in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -145,7 +145,7 @@ int stack_construct ( stack **const pp_stack, size_t size )
 		{
 			no_mem:
 				#ifndef NDEBUG
-					printf("[Standard Library] Failed to allocate memory in call to function \"%s\"\n", __FUNCSIG__);
+					printf("[Standard Library] Failed to allocate memory in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -184,7 +184,7 @@ int stack_push ( stack *const p_stack, const void *const p_value )
 		{
 			no_stack:
 				#ifndef NDEBUG
-					printf("[stack] Null pointer provided for \"p_stack\" in call to function \"%s\"\n", __FUNCSIG__);
+					printf("[stack] Null pointer provided for \"p_stack\" in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -192,7 +192,7 @@ int stack_push ( stack *const p_stack, const void *const p_value )
 
 			no_value:
 				#ifndef NDEBUG
-					printf("[stack] Null pointer provided for \"p_value\" in call to function \"%s\"\n", __FUNCSIG__);
+					printf("[stack] Null pointer provided for \"p_value\" in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -259,7 +259,7 @@ int stack_pop ( stack *const p_stack, const void **const ret )
 		{
 			no_stack:
 				#ifndef NDEBUG
-					printf("[stack] Null pointer provided for \"p_stack\" in call to function \"%s\"\n", __FUNCSIG__);
+					printf("[stack] Null pointer provided for \"p_stack\" in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -308,7 +308,7 @@ int stack_peek ( const stack *const p_stack, const void **const ret )
 		{
 			no_stack:
 				#ifndef NDEBUG
-					printf("[stack] Null pointer provided for \"p_stack\" in call to function \"%s\"\n", __FUNCSIG__);
+					printf("[stack] Null pointer provided for \"p_stack\" in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -316,7 +316,7 @@ int stack_peek ( const stack *const p_stack, const void **const ret )
 
 			no_ret:
 				#ifndef NDEBUG
-					printf("[stack] Null pointer provided for \"ret\" in call to function \"%s\"\n", __FUNCSIG__);
+					printf("[stack] Null pointer provided for \"ret\" in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -365,7 +365,7 @@ int stack_destroy ( stack **const pp_stack )
 		{
 			no_stack:
 				#ifndef NDEBUG
-					printf("[stack] Null pointer provided for \"pp_stack\" in call to function \"%s\"\n", __FUNCSIG__);
+					printf("[stack] Null pointer provided for \"pp_stack\" in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -373,7 +373,7 @@ int stack_destroy ( stack **const pp_stack )
 
 			pointer_to_null_pointer:
 				#ifndef NDEBUG
-					printf("[stack] Parameter \"pp_stack\" points to null pointer in call to function \"%s\"\n", __FUNCSIG__);
+					printf("[stack] Parameter \"pp_stack\" points to null pointer in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
