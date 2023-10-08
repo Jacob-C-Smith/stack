@@ -1,6 +1,9 @@
 # stack
 [![CMake](https://github.com/Jacob-C-Smith/stack/actions/workflows/cmake.yml/badge.svg)](https://github.com/Jacob-C-Smith/stack/actions/workflows/cmake.yml)
 
+**Dependencies:**\
+[![sync](https://github.com/Jacob-C-Smith/sync/actions/workflows/cmake.yml/badge.svg)](https://github.com/Jacob-C-Smith/sync/actions/workflows/cmake.yml)
+
  A minimal, thread-safe stack implementation written in C. 
  
  > 1 [Download](#download)
