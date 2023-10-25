@@ -12,10 +12,10 @@
 // Structures
 struct stack_s
 {
-	size_t    _size;   // The quantity of elements that could fit in the stack
-	size_t    _offset; // The quantity of elements in the stack
+	size_t       _size;   // The quantity of elements that could fit in the stack
+	size_t       _offset; // The quantity of elements in the stack
 	const void **_data;   // The stack elements
-	mutex     _lock;   // Locked when reading/writing values
+	mutex        _lock;   // Locked when reading/writing values
 };
 
 int stack_create ( stack **const pp_stack )
