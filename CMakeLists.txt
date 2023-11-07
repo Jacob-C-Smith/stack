@@ -42,6 +42,19 @@ if ( NOT "${HAS_SYNC}")
     set(HAS_SYNC true PARENT_SCOPE)
 endif()
 
+# Find the log module
+if ( NOT "${HAS_LOG}")
+
+    # Log
+    message("[stack] Adding log project")
+
+    # Add the log directory
+    add_subdirectory(${CMAKE_SOURCE_DIR}/extern/log ${CMAKE_SOURCE_DIR}/build/log)
+
+    # Let any parent project know that this project has log
+    set(HAS_LOG true PARENT_SCOPE)
+endif()
+
 # Add the stack project
 if ( NOT "${HAS_STACK}")
 
@@ -60,9 +73,9 @@ target_link_libraries(stack_example sync)
 
 # Add source to the tester
 add_executable (stack_test "stack.c" "stack_test.c")
-add_dependencies(stack_test sync)
+add_dependencies(stack_test sync log)
 target_include_directories(stack_test PUBLIC include include/stack ${CMAKE_SOURCE_DIR}/extern/sync/include/)
-target_link_libraries(stack_test sync)
+target_link_libraries(stack_test sync log)
 
 # Add source to the library
 add_library(stack SHARED "stack.c")

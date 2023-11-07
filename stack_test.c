@@ -12,6 +12,8 @@
 #include <string.h>
 #include <stdbool.h>
 
+#include <log/log.h>
+
 #include <stack/stack.h>
 
 // Possible values
@@ -87,9 +89,14 @@ int main ( int argc, const char* argv[] )
 
     // Initialize the timer library
     timer_init();
-
+    log_init(0, true);
+    
     // Formatting
-    printf("|==============|\n| STACK TESTER |\n|==============|\n\n");
+    printf(
+        "╭──────────────╮\n"\
+        "│ stack tester │\n"\
+        "╰──────────────╯\n\n"
+    );
 
     // Start
     t0 = timer_high_precision();
@@ -101,9 +108,9 @@ int main ( int argc, const char* argv[] )
     t1 = timer_high_precision();
 
     // Report the time it took to run the tests
-    printf("stack took ");
+    log_info("stack took ");
     print_time_pretty ( (double)(t1-t0)/(double)timer_seconds_divisor() );
-    printf(" to test\n");
+    log_info(" to test\n");
 
     // Flush stdio
     fflush(stdout);
@@ -144,27 +151,27 @@ int print_time_pretty ( double seconds )
 
     // Print days
     if ( days ) 
-        printf("%zd D, ", days);
+        log_info("%zd D, ", days);
     
     // Print hours
     if ( hours )
-        printf("%zd h, ", hours);
+        log_info("%zd h, ", hours);
 
     // Print minutes
     if ( minutes )
-        printf("%zd m, ", minutes);
+        log_info("%zd m, ", minutes);
 
     // Print seconds
     if ( __seconds )
-        printf("%zd s, ", __seconds);
+        log_info("%zd s, ", __seconds);
     
     // Print milliseconds
     if ( milliseconds )
-        printf("%zd ms, ", milliseconds);
+        log_info("%zd ms, ", milliseconds);
     
     // Print microseconds
     if ( microseconds )
-        printf("%zd us", microseconds);
+        log_info("%zd us", microseconds);
     
     // Success
     return 1;
@@ -297,7 +304,7 @@ int test_empty_stack ( int (*stack_constructor)(stack **pp_stack), char *name )
 {
 
     // Print the name of the scenario
-    printf("Scenario: %s\n", name);
+    log_info("Scenario: %s\n", name);
 
     print_test(name, "stack_push_A", test_push(stack_constructor, A_key, one) );
     print_test(name, "stack_pop"   , test_pop (stack_constructor, (void *)0, 1, zero) );
@@ -313,7 +320,7 @@ int test_one_element_stack ( int (*stack_constructor)(stack **), char *name, cha
 {
 
     // Print the name of the scenario
-    printf("Scenario: %s\n", name);
+    log_info("Scenario: %s\n", name);
 
     print_test(name, "stack_push_B" , test_push(stack_constructor, B_key, one) );
     print_test(name, "stack_pop"    , test_pop(stack_constructor, keys[0], 1, match) );
@@ -330,7 +337,7 @@ int test_two_element_stack ( int (*stack_constructor)(stack **), char *name, cha
 {
 
     // Print the name of the scenario
-    printf("Scenario: %s\n", name);
+    log_info("Scenario: %s\n", name);
 
     print_test(name, "stack_push_C"     , test_push(stack_constructor, C_key, one) );
     print_test(name, "stack_pop"        , test_pop(stack_constructor, keys[1], 1, match) );
@@ -348,7 +355,7 @@ int test_three_element_stack ( int (*stack_constructor)(stack **), char *name, c
 {
 
     // Print the name of the scenario
-    printf("Scenario: %s\n", name);
+    log_info("Scenario: %s\n", name);
 
     print_test(name, "stack_push_X"         , test_push(stack_constructor, X_key, zero) );
     print_test(name, "stack_pop"            , test_pop(stack_constructor, keys[2], 1, match) );
@@ -364,10 +371,12 @@ int test_three_element_stack ( int (*stack_constructor)(stack **), char *name, c
 }
 
 int print_test ( const char *scenario_name, const char *test_name, bool passed )
-{
+{ 
 
-    // Initialized data
-    printf("%s_test_%-21s %s\n",scenario_name, test_name, (passed) ? "PASS" : "FAIL");
+    if ( passed ) 
+        log_pass("[%s] %s %s\n", "PASS", scenario_name, test_name);
+    else
+        log_fail("[%s] %s %s\n", "PASS", scenario_name, test_name);
 
     // Increment the counters
     {
@@ -396,8 +405,8 @@ int print_final_summary ()
     total_fails  += ephemeral_fails;
 
     // Print
-    printf("\nTests: %d, Passed: %d, Failed: %d (%%%.3f)\n",  ephemeral_tests, ephemeral_passes, ephemeral_fails, ((float)ephemeral_passes/(float)ephemeral_tests*100.f));
-    printf("Total: %d, Passed: %d, Failed: %d (%%%.3f)\n\n",  total_tests, total_passes, total_fails, ((float)total_passes/(float)total_tests*100.f));
+    log_info("\nTests: %d, Passed: %d, Failed: %d (%%%.3f)\n",  ephemeral_tests, ephemeral_passes, ephemeral_fails, ((float)ephemeral_passes/(float)ephemeral_tests*100.f));
+    log_info("Total: %d, Passed: %d, Failed: %d (%%%.3f)\n\n",  total_tests, total_passes, total_fails, ((float)total_passes/(float)total_tests*100.f));
 
     ephemeral_tests  = 0;
     ephemeral_passes = 0;
