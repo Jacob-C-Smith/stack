@@ -450,10 +450,11 @@ bool test_peek ( int (*stack_constructor)(stack **), char *expected_value, resul
     result = stack_peek(p_stack, &result_value);
 
     if (result == zero)
-        return (result == expected);
+        goto done;
     else if ( strcmp(result_value, expected_value) == 0 )
         result = match;
 
+    done:
     // Free the stack
     stack_destroy(&p_stack);
 
@@ -478,14 +479,15 @@ bool test_pop ( int (*stack_constructor)(stack **), char *expected_value, size_t
         result = stack_pop(p_stack, &result_value);
 
         if ( result == zero )
-            return (result == expected);
+            goto done;
     }
 
     if ( result == zero )
-        return (result == expected);
+        goto done;
     else if ( strcmp(result_value, expected_value) == 0 )
         result = match;
 
+    done:
     // Free the stack
     stack_destroy(&p_stack);
 
