@@ -65,3 +65,4 @@ cmake_install.cmake
 CMakeFiles/
 *.sln
 Icon?
+.DS_Store
