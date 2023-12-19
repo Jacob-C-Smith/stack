@@ -1,5 +1,5 @@
-﻿# Need CMake 3.0
-cmake_minimum_required (VERSION 3.0)
+﻿# Need CMake 3.28.0
+cmake_minimum_required (VERSION 3.28.0)
 
 # This is the name of the repository
 project ("stack")
@@ -39,7 +39,10 @@ if ( NOT "${HAS_SYNC}")
     add_subdirectory(${CMAKE_SOURCE_DIR}/extern/sync ${CMAKE_SOURCE_DIR}/build/sync)
 
     # Let any parent project know that this project has sync
-    set(HAS_SYNC true PARENT_SCOPE)
+    if(NOT PROJECT_IS_TOP_LEVEL)
+        set(HAS_SYNC true PARENT_SCOPE)
+        set(SYNC_INCLUDE_DIR ${SYNC_INCLUDE_DIR} PARENT_SCOPE)
+    endif()
 endif()
 
 # Find the log module
@@ -52,7 +55,10 @@ if ( NOT "${HAS_LOG}")
     add_subdirectory(${CMAKE_SOURCE_DIR}/extern/log ${CMAKE_SOURCE_DIR}/build/log)
 
     # Let any parent project know that this project has log
-    set(HAS_LOG true PARENT_SCOPE)
+    if(NOT PROJECT_IS_TOP_LEVEL)
+        set(HAS_LOG true PARENT_SCOPE)
+        set(LOG_INCLUDE_DIR ${LOG_INCLUDE_DIR} PARENT_SCOPE)
+    endif()
 endif()
 
 # Add the stack project
@@ -61,24 +67,29 @@ if ( NOT "${HAS_STACK}")
     # Log
     message("[stack] Adding stack project")
 
+    set (STACK_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
+
     # Let any parent project know that it has the stack project
-    set(HAS_STACK true PARENT_SCOPE)
+    if(NOT PROJECT_IS_TOP_LEVEL)
+        set(HAS_STACK true PARENT_SCOPE)
+        set(STACK_INCLUDE_DIR ${STACK_INCLUDE_DIR} PARENT_SCOPE)
+    endif()
 endif()
 
 # Add source to this project's executable.
-add_executable(stack_example "stack.c" "main.c")
-add_dependencies(stack_example sync)
-target_include_directories(stack_example PUBLIC include include/stack)
-target_link_libraries(stack_example sync)
+add_executable(stack_example "main.c")
+add_dependencies(stack_example stack)
+target_include_directories(stack_example PUBLIC ${STACK_INCLUDE_DIR})
+target_link_libraries(stack_example stack)
 
 # Add source to the tester
-add_executable (stack_test "stack.c" "stack_test.c")
-add_dependencies(stack_test sync log)
-target_include_directories(stack_test PUBLIC include include/stack ${CMAKE_SOURCE_DIR}/extern/sync/include/)
-target_link_libraries(stack_test sync log)
+add_executable (stack_test "stack_test.c")
+add_dependencies(stack_test stack sync log)
+target_include_directories(stack_test PUBLIC ${STACK_INCLUDE_DIR} ${SYNC_INCLUDE_DIR} ${LOG_INCLUDE_DIR})
+target_link_libraries(stack_test stack sync log)
 
 # Add source to the library
 add_library(stack SHARED "stack.c")
 add_dependencies(stack sync)
-target_include_directories(stack PUBLIC include include/stack ${CMAKE_SOURCE_DIR}/extern/sync/include/)
+target_include_directories(stack PUBLIC include ${STACK_INCLUDE_DIR} ${SYNC_INCLUDE_DIR})
 target_link_libraries(stack sync)
