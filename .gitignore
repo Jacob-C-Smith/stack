@@ -66,3 +66,4 @@ CMakeFiles/
 *.sln
 Icon?
 .DS_Store
+Makefile
