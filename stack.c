@@ -166,13 +166,13 @@ int stack_push ( stack *const p_stack, const void *const p_value )
 	if ( p_stack->_size == p_stack->_offset ) goto stack_overflow;
 
 	// Lock
-    mutex_lock(p_stack->_lock);
+    mutex_lock(&p_stack->_lock);
 
 	// Push the data onto the stack
 	p_stack->_data[p_stack->_offset++] = p_value;
 
 	// Unlock
-    mutex_unlock(p_stack->_lock);
+    mutex_unlock(&p_stack->_lock);
 
 	// Success
 	return 1;
@@ -223,7 +223,7 @@ int stack_pop ( stack *const p_stack, const void **const ret )
 	if ( p_stack->_offset < 1 ) goto stack_underflow;
 
 	// Lock
-	mutex_lock(p_stack->_lock);
+	mutex_lock(&p_stack->_lock);
 
 	// Return the value to the caller
 	if ( ret )
@@ -236,7 +236,7 @@ int stack_pop ( stack *const p_stack, const void **const ret )
 		--p_stack->_offset;
 
 	// Unlock
-	mutex_unlock(p_stack->_lock);
+	mutex_unlock(&p_stack->_lock);
 
 	// Success
 	return 1;
@@ -279,13 +279,13 @@ int stack_peek ( const stack *const p_stack, const void **const ret )
 	if ( p_stack->_offset < 1 ) goto stack_underflow;
 
 	// Lock
-	mutex_lock(p_stack->_lock);
+	mutex_lock(&p_stack->_lock);
 
 	// Peek the stack and write the return
 	*ret = p_stack->_data[p_stack->_offset-1];
 	
 	// Unlock
-	mutex_unlock(p_stack->_lock);
+	mutex_unlock(&p_stack->_lock);
 
 	// Success
 	return 1;
@@ -338,13 +338,13 @@ int stack_destroy ( stack **const pp_stack )
 	if ( p_stack == (void *) 0 ) goto pointer_to_null_pointer;
 
 	// Lock
-    mutex_lock(p_stack->_lock);
+    mutex_lock(&p_stack->_lock);
 
 	// No more pointer for caller
 	*pp_stack = 0;
 
 	// Unlock
-    mutex_unlock(p_stack->_lock);
+    mutex_unlock(&p_stack->_lock);
 
 	// Free stack data
 	if ( STACK_REALLOC(p_stack->_data, 0) ) goto failed_to_free;
