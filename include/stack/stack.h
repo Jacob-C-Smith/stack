@@ -13,6 +13,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
+// log submodule
+#include <log/log.h>
 
 // sync submodule
 #include <sync/sync.h>
@@ -34,6 +38,16 @@ struct stack_s;
 
 // Type definitions
 typedef struct stack_s stack;
+
+// Initializer
+/** !
+ * This gets called at runtime before main. 
+ * 
+ * @param void
+ * 
+ * @return void
+ */
+DLLEXPORT void stack_init ( void ) __attribute__((constructor));
 
 // Allocators
 /** !
@@ -95,7 +109,7 @@ DLLEXPORT int stack_pop ( stack *const p_stack, const void **const ret );
  * 
  * @return 1 on success, 0 on error
 */
-DLLEXPORT int stack_peek ( const stack *const p_stack, const void **const ret );
+DLLEXPORT int stack_peek ( stack *const p_stack, const void **const ret );
 
 // Destructors
 /** !
@@ -108,3 +122,13 @@ DLLEXPORT int stack_peek ( const stack *const p_stack, const void **const ret );
  * @return 1 on success, 0 on error
 */
 DLLEXPORT int stack_destroy ( stack **const pp_stack );
+
+// Cleanup
+/** !
+ * This gets called at runtime after main
+ * 
+ * @param void
+ * 
+ * @return void
+ */
+DLLEXPORT void stack_exit ( void ) __attribute__((destructor));
