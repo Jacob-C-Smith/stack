@@ -435,7 +435,7 @@ bool test_peek ( int (*stack_constructor)(stack **), char *expected_value, resul
 {
 
     // Argument check
-    if ( expected_value == (void *) 0 ) return false;
+    //if ( expected_value == (void *) 0 ) return false;
 
     // Initialized data
     result_t    result       = 0;
@@ -465,12 +465,12 @@ bool test_pop ( int (*stack_constructor)(stack **), char *expected_value, size_t
 {
 
     // Argument check
-    if ( expected_value == (void *) 0 ) return false;
-    
+    //if ( expected_value == (void *) 0 ) return false;
+
     // Initialized data
     result_t    result       = 0;
     stack      *p_stack      = 0;
-    const void *result_value = "";
+    const void *result_value = 0;
 
     // Build the stack
     stack_constructor(&p_stack);
