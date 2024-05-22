@@ -87,10 +87,6 @@ int main ( int argc, const char* argv[] )
     (void) argc;
     (void) argv;
 
-    // Initialize the timer library
-    timer_init();
-    log_init(0, true);
-    
     // Formatting
     printf(
         "╭──────────────╮\n"\
@@ -438,10 +434,13 @@ bool test_push ( int (*stack_constructor)(stack **), char *value, result_t expec
 bool test_peek ( int (*stack_constructor)(stack **), char *expected_value, result_t expected )
 {
 
+    // Argument check
+    if ( expected_value == (void *) 0 ) return false;
+
     // Initialized data
     result_t    result       = 0;
     stack      *p_stack      = 0;
-    void       *result_value = 0;
+    const void *result_value = 0;
 
     // Build the stack
     stack_constructor(&p_stack);
@@ -465,10 +464,13 @@ bool test_peek ( int (*stack_constructor)(stack **), char *expected_value, resul
 bool test_pop ( int (*stack_constructor)(stack **), char *expected_value, size_t pops, result_t expected )
 {
 
+    // Argument check
+    if ( expected_value == (void *) 0 ) return false;
+    
     // Initialized data
     result_t    result       = 0;
     stack      *p_stack      = 0;
-    void       *result_value = 0;
+    const void *result_value = "";
 
     // Build the stack
     stack_constructor(&p_stack);

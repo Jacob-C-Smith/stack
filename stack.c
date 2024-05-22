@@ -6,7 +6,7 @@
  * @author Jacob Smith
  */
 
-// Include
+// Header
 #include <stack/stack.h>
 
 // Structures
@@ -17,6 +17,28 @@ struct stack_s
 	const void **_data;   // The stack elements
 	mutex        _lock;   // Locked when reading/writing values
 };
+
+// Data
+static bool initialized = false;
+
+void stack_init ( void )
+{
+
+    // State check
+    if ( initialized == true ) return;
+
+    // Initialize the log library
+    log_init();
+
+    // Initialize the sync library
+    sync_init();
+
+    // Set the initialized flag
+    initialized = true;
+
+    // Done
+    return;
+}
 
 int stack_create ( stack **const pp_stack )
 {
@@ -46,7 +68,7 @@ int stack_create ( stack **const pp_stack )
 		{
 			no_stack:
 				#ifndef NDEBUG
-					printf("[stack] Null pointer provided for \"pp_stack\" in call to function \"%s\"\n", __FUNCTION__);
+					log_error("[stack] Null pointer provided for \"pp_stack\" in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -57,7 +79,7 @@ int stack_create ( stack **const pp_stack )
 		{
 			no_mem:
 				#ifndef NDEBUG
-					printf("[Standard Library] Failed to allocate memory in call to function \"%s\"\n", __FUNCTION__);
+					log_error("[Standard Library] Failed to allocate memory in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -107,7 +129,7 @@ int stack_construct ( stack **const pp_stack, size_t size )
 		{
 			no_stack:
 				#ifndef NDEBUG
-					printf("[stack] Null pointer provided for \"pp_stack\" in call to function \"%s\"\n", __FUNCTION__);
+					log_error("[stack] Null pointer provided for \"pp_stack\" in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -115,7 +137,7 @@ int stack_construct ( stack **const pp_stack, size_t size )
 
 			no_size:
 				#ifndef NDEBUG
-					printf("[stack] No size provided in call to function \"%s\"\n", __FUNCTION__);
+					log_error("[stack] No size provided in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -126,7 +148,7 @@ int stack_construct ( stack **const pp_stack, size_t size )
 		{
 			failed_to_allocate_stack:
 				#ifndef NDEBUG
-					printf("[stack] Failed to allocate memory in call to function \"%s\"\n", __FUNCTION__);
+					log_error("[stack] Failed to allocate memory in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -134,7 +156,7 @@ int stack_construct ( stack **const pp_stack, size_t size )
 
 			failed_to_mutex_create:
                 #ifndef NDEBUG
-                    printf("[stack] Failed to create mutex in call to function \"%s\"\n", __FUNCTION__);
+                    log_error("[stack] Failed to create mutex in call to function \"%s\"\n", __FUNCTION__);
                 #endif
 
                 // Error 
@@ -145,7 +167,7 @@ int stack_construct ( stack **const pp_stack, size_t size )
 		{
 			no_mem:
 				#ifndef NDEBUG
-					printf("[Standard Library] Failed to allocate memory in call to function \"%s\"\n", __FUNCTION__);
+					log_error("[Standard Library] Failed to allocate memory in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -184,7 +206,7 @@ int stack_push ( stack *const p_stack, const void *const p_value )
 		{
 			no_stack:
 				#ifndef NDEBUG
-					printf("[stack] Null pointer provided for \"p_stack\" in call to function \"%s\"\n", __FUNCTION__);
+					log_error("[stack] Null pointer provided for \"p_stack\" in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -192,7 +214,7 @@ int stack_push ( stack *const p_stack, const void *const p_value )
 
 			no_value:
 				#ifndef NDEBUG
-					printf("[stack] Null pointer provided for \"p_value\" in call to function \"%s\"\n", __FUNCTION__);
+					log_error("[stack] Null pointer provided for \"p_value\" in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -204,7 +226,7 @@ int stack_push ( stack *const p_stack, const void *const p_value )
 		{
 			stack_overflow:
 				#ifndef NDEBUG
-					printf("[stack] Stack overflow!\n");
+					log_error("[stack] Stack overflow!\n");
 				#endif
 
 				// Error
@@ -248,7 +270,7 @@ int stack_pop ( stack *const p_stack, const void **const ret )
 		{
 			stack_underflow:
 				#ifndef NDEBUG
-					printf("[stack] Stack Underflow!\n");
+					log_error("[stack] Stack Underflow!\n");
 				#endif
 
 				// Error
@@ -259,7 +281,7 @@ int stack_pop ( stack *const p_stack, const void **const ret )
 		{
 			no_stack:
 				#ifndef NDEBUG
-					printf("[stack] Null pointer provided for \"p_stack\" in call to function \"%s\"\n", __FUNCTION__);
+					log_error("[stack] Null pointer provided for \"p_stack\" in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -268,7 +290,7 @@ int stack_pop ( stack *const p_stack, const void **const ret )
 	}
 }
 
-int stack_peek ( const stack *const p_stack, const void **const ret )
+int stack_peek ( stack *const p_stack, const void **const ret )
 {
 
 	// Argument check
@@ -297,7 +319,7 @@ int stack_peek ( const stack *const p_stack, const void **const ret )
 		{
 			stack_underflow:
 				#ifndef NDEBUG
-					printf("[stack] Stack Underflow!\n");
+					log_error("[stack] Stack Underflow!\n");
 				#endif
 
 				// Error
@@ -308,7 +330,7 @@ int stack_peek ( const stack *const p_stack, const void **const ret )
 		{
 			no_stack:
 				#ifndef NDEBUG
-					printf("[stack] Null pointer provided for \"p_stack\" in call to function \"%s\"\n", __FUNCTION__);
+					log_error("[stack] Null pointer provided for \"p_stack\" in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -316,7 +338,7 @@ int stack_peek ( const stack *const p_stack, const void **const ret )
 
 			no_ret:
 				#ifndef NDEBUG
-					printf("[stack] Null pointer provided for \"ret\" in call to function \"%s\"\n", __FUNCTION__);
+					log_error("[stack] Null pointer provided for \"ret\" in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -365,7 +387,7 @@ int stack_destroy ( stack **const pp_stack )
 		{
 			no_stack:
 				#ifndef NDEBUG
-					printf("[stack] Null pointer provided for \"pp_stack\" in call to function \"%s\"\n", __FUNCTION__);
+					log_error("[stack] Null pointer provided for \"pp_stack\" in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -373,7 +395,7 @@ int stack_destroy ( stack **const pp_stack )
 
 			pointer_to_null_pointer:
 				#ifndef NDEBUG
-					printf("[stack] Parameter \"pp_stack\" points to null pointer in call to function \"%s\"\n", __FUNCTION__);
+					log_error("[stack] Parameter \"pp_stack\" points to null pointer in call to function \"%s\"\n", __FUNCTION__);
 				#endif
 
 				// Error
@@ -384,11 +406,30 @@ int stack_destroy ( stack **const pp_stack )
         {
             failed_to_free:
                 #ifndef NDEBUG
-                    printf("[Standard Library] Call to \"realloc\" returned an erroneous value in call to function \"%s\"\n", __FUNCTION__);
+                    log_error("[Standard Library] Call to \"realloc\" returned an erroneous value in call to function \"%s\"\n", __FUNCTION__);
                 #endif
 
                 // Error
                 return 0;
         }
 	}
+}
+
+void stack_exit ( void )
+{
+    
+    // State check
+    if ( initialized == false ) return;
+
+    // Clean up the log library
+    log_exit();
+
+    // Clean up the sync library
+    sync_exit();
+
+    // Clear the initialized flag
+    initialized = false;
+
+    // Done
+    return;
 }

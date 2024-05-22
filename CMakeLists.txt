@@ -18,7 +18,7 @@ else()
     #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -Wall -Wextra -Wpedantic -Weverything -Wno-declaration-after-statement -Ofast")
 
     # For GCC
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -Wall -Wextra -Wpedantic -Wno-declaration-after-statement -O3")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 -Wall -Wextra -Wno-declaration-after-statement -O3")
 endif()
 
 # Comment out for Debug mode
@@ -26,6 +26,7 @@ set(IS_DEBUG_BUILD CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 # Set for debug mode
 if (${IS_DEBUG_BUILD})
+else()
     add_compile_definitions(NDEBUG)
 endif()
 
@@ -90,6 +91,6 @@ target_link_libraries(stack_test stack sync log)
 
 # Add source to the library
 add_library(stack SHARED "stack.c")
-add_dependencies(stack sync)
-target_include_directories(stack PUBLIC include ${STACK_INCLUDE_DIR} ${SYNC_INCLUDE_DIR})
-target_link_libraries(stack sync)
+add_dependencies(stack sync log)
+target_include_directories(stack PUBLIC include ${STACK_INCLUDE_DIR} ${SYNC_INCLUDE_DIR} ${LOG_INCLUDE_DIR})
+target_link_libraries(stack sync log)
