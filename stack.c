@@ -12,11 +12,23 @@
 // Structures
 struct stack_s
 {
-	size_t       _size;   // The quantity of elements that could fit in the stack
-	size_t       _offset; // The quantity of elements in the stack
-	const void **_data;   // The stack elements
-	mutex        _lock;   // Locked when reading/writing values
+	size_t      size;      // The quantity of elements that could fit in the stack
+	size_t      offset;    // The quantity of elements in the stack
+	mutex       _lock;     // Locked when reading/writing values
+	const void *_p_data[]; // The stack elements
 };
+
+// Forward declarations
+/** !
+ * Allocate memory for a stack
+ * 
+ * @param pp_stack result
+ * 
+ * @sa stack_destroy
+ * 
+ * @return 1 on success, 0 on error
+*/
+DLLEXPORT int stack_create ( stack **const pp_stack );
 
 // Data
 static bool initialized = false;
@@ -99,25 +111,22 @@ int stack_construct ( stack **const pp_stack, size_t size )
 	stack *p_stack = 0;
 
 	// Allocate a stack
-	if ( stack_create(pp_stack) == 0 ) goto failed_to_allocate_stack;
-	
-	// Get a pointer to the stack
-	p_stack = *pp_stack;
+	if ( stack_create(&p_stack) == 0 ) goto failed_to_allocate_stack;
 
-	// Allocate space for the stack
-	p_stack->_data = STACK_REALLOC(0, size * sizeof(void *));
-
-	// Zero set
-	memset(p_stack->_data, 0, size * sizeof(void *));
+	// Grow the allocation
+	p_stack = STACK_REALLOC(p_stack, sizeof(stack) + ( size * sizeof(void *) ) );
 	
 	// Error check
-	if ( p_stack->_data == (void *) 0 ) goto no_mem;
+	if ( p_stack == (void *) 0 ) goto no_mem;
 
 	// Set the size
-	p_stack->_size = size;
+	p_stack->size = size;
 
 	// Create a mutex
     if ( mutex_create(&p_stack->_lock) == 0 ) goto failed_to_mutex_create;
+
+	// Return a pointer to the caller
+	*pp_stack = p_stack;
 
 	// Success
 	return 1;
@@ -185,13 +194,13 @@ int stack_push ( stack *const p_stack, const void *const p_value )
 	if ( p_value == (void *) 0 ) goto no_value;
 
 	// Error checking
-	if ( p_stack->_size == p_stack->_offset ) goto stack_overflow;
+	if ( p_stack->size == p_stack->offset ) goto stack_overflow;
 
 	// Lock
     mutex_lock(&p_stack->_lock);
 
 	// Push the data onto the stack
-	p_stack->_data[p_stack->_offset++] = p_value;
+	p_stack->_p_data[p_stack->offset++] = p_value;
 
 	// Unlock
     mutex_unlock(&p_stack->_lock);
@@ -242,7 +251,7 @@ int stack_pop ( stack *const p_stack, const void **const ret )
 	if ( p_stack == (void *) 0 ) goto no_stack;
 
 	// Error checking
-	if ( p_stack->_offset < 1 ) goto stack_underflow;
+	if ( p_stack->offset < 1 ) goto stack_underflow;
 
 	// Lock
 	mutex_lock(&p_stack->_lock);
@@ -251,11 +260,11 @@ int stack_pop ( stack *const p_stack, const void **const ret )
 	if ( ret )
 
 		// Pop the stack and write the return
-		*ret = p_stack->_data[--p_stack->_offset];
+		*ret = p_stack->_p_data[--p_stack->offset];
 	
 	// Don't return a value to the caller
 	else
-		--p_stack->_offset;
+		--p_stack->offset;
 
 	// Unlock
 	mutex_unlock(&p_stack->_lock);
@@ -298,13 +307,13 @@ int stack_peek ( stack *const p_stack, const void **const ret )
 	if ( ret     == (void *) 0 ) goto no_ret;
 
 	// Error checking
-	if ( p_stack->_offset < 1 ) goto stack_underflow;
+	if ( p_stack->offset < 1 ) goto stack_underflow;
 
 	// Lock
 	mutex_lock(&p_stack->_lock);
 
 	// Peek the stack and write the return
-	*ret = p_stack->_data[p_stack->_offset-1];
+	*ret = p_stack->_p_data[p_stack->offset-1];
 	
 	// Unlock
 	mutex_unlock(&p_stack->_lock);
@@ -368,14 +377,11 @@ int stack_destroy ( stack **const pp_stack )
 	// Unlock
     mutex_unlock(&p_stack->_lock);
 
-	// Free stack data
-	if ( STACK_REALLOC(p_stack->_data, 0) ) goto failed_to_free;
-
 	// Destroy the mutex
     mutex_destroy(&p_stack->_lock);
 	
 	// Free the stack
-	if ( STACK_REALLOC(p_stack, 0) ) goto failed_to_free;
+	p_stack = STACK_REALLOC(p_stack, 0);
 
 	// Success
 	return 1;
@@ -401,17 +407,6 @@ int stack_destroy ( stack **const pp_stack )
 				// Error
 				return 0;
 		}
-
-		// Standard library errors
-        {
-            failed_to_free:
-                #ifndef NDEBUG
-                    log_error("[Standard Library] Call to \"realloc\" returned an erroneous value in call to function \"%s\"\n", __FUNCTION__);
-                #endif
-
-                // Error
-                return 0;
-        }
 	}
 }
 

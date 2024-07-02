@@ -49,23 +49,11 @@ typedef struct stack_s stack;
  */
 DLLEXPORT void stack_init ( void ) __attribute__((constructor));
 
-// Allocators
-/** !
- * Allocate memory for a stack
- * 
- * @param pp_stack : ret
- * 
- * @sa stack_destroy
- * 
- * @return 1 on success, 0 on error
-*/
-DLLEXPORT int stack_create ( stack **const pp_stack );
-
 // Constructors 
 /** !
  * Construct a stack of a specified size
  * 
- * @param pp_stack : ret
+ * @param pp_stack result
  * 
  * @sa stack_destroy
  * 
@@ -77,8 +65,8 @@ DLLEXPORT int stack_construct ( stack **const pp_stack, size_t size );
 /** !
  * Push a value onto a stack
  * 
- * @param p_stack : the stack
- * @param p_value : the value
+ * @param p_stack the stack
+ * @param p_value the value
  * 
  * @sa stack_pop
  * 
@@ -89,8 +77,8 @@ DLLEXPORT int stack_push ( stack *const p_stack, const void *const p_value );
 /** !
  * Pop a value off a stack
  * 
- * @param p_stack : the stack
- * @param ret : return
+ * @param p_stack the stack
+ * @param ret result
  * 
  * @sa stack_push
  * 
@@ -102,8 +90,8 @@ DLLEXPORT int stack_pop ( stack *const p_stack, const void **const ret );
 /** !
  * Peek the top of the stack
  * 
- * @param p_stack : the stack
- * @param ret : return
+ * @param p_stack the stack
+ * @param ret result
  * 
  * @sa stack_pop
  * 
@@ -115,9 +103,9 @@ DLLEXPORT int stack_peek ( stack *const p_stack, const void **const ret );
 /** !
  * Deallocate a stack
  * 
- * @param pp_stack : pointer to stack pointer
+ * @param pp_stack pointer to stack pointer
  * 
- * @sa stack_create
+ * @sa stack_construct
  * 
  * @return 1 on success, 0 on error
 */
