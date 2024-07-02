@@ -300,7 +300,7 @@ int test_empty_stack ( int (*stack_constructor)(stack **pp_stack), char *name )
 {
 
     // Print the name of the scenario
-    log_info("Scenario: %s\n", name);
+    log_scenario("%s\n", name);
 
     print_test(name, "stack_push_A", test_push(stack_constructor, A_key, one) );
     print_test(name, "stack_pop"   , test_pop (stack_constructor, (void *)0, 1, zero) );
@@ -316,7 +316,7 @@ int test_one_element_stack ( int (*stack_constructor)(stack **), char *name, cha
 {
 
     // Print the name of the scenario
-    log_info("Scenario: %s\n", name);
+    log_scenario("%s\n", name);
 
     print_test(name, "stack_push_B" , test_push(stack_constructor, B_key, one) );
     print_test(name, "stack_pop"    , test_pop(stack_constructor, keys[0], 1, match) );
@@ -333,7 +333,7 @@ int test_two_element_stack ( int (*stack_constructor)(stack **), char *name, cha
 {
 
     // Print the name of the scenario
-    log_info("Scenario: %s\n", name);
+    log_scenario("%s\n", name);
 
     print_test(name, "stack_push_C"     , test_push(stack_constructor, C_key, one) );
     print_test(name, "stack_pop"        , test_pop(stack_constructor, keys[1], 1, match) );
@@ -351,7 +351,7 @@ int test_three_element_stack ( int (*stack_constructor)(stack **), char *name, c
 {
 
     // Print the name of the scenario
-    log_info("Scenario: %s\n", name);
+    log_scenario("%s\n", name);
 
     print_test(name, "stack_push_X"         , test_push(stack_constructor, X_key, zero) );
     print_test(name, "stack_pop"            , test_pop(stack_constructor, keys[2], 1, match) );
