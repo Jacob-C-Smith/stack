@@ -61,9 +61,6 @@
  ```
  ### Function definitions
  ```c 
-// Allocators
-int stack_create ( const stack **const pp_stack );
-
 // Constructors 
 int stack_construct ( const stack **const pp_stack, size_t size );
 
