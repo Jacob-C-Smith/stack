@@ -52,8 +52,8 @@ int total_tests      = 0,
 
 
 // Forward declarations
-int run_tests           ();
-int print_final_summary ();
+int run_tests           ( void );
+int print_final_summary ( void );
 int print_test          ( const char  *scenario_name, const char *test_name, bool passed );
 
 int print_time_pretty ( double seconds );
@@ -392,7 +392,7 @@ int print_test ( const char *scenario_name, const char *test_name, bool passed )
     return 1;
 }
 
-int print_final_summary ()
+int print_final_summary ( void )
 {
 
     // Accumulate
@@ -422,7 +422,7 @@ bool test_push ( int (*stack_constructor)(stack **), char *value, result_t expec
     // Build the stack
     stack_constructor(&p_stack);
 
-    result = stack_push(p_stack, value);
+    result = (result_t) stack_push(p_stack, value);
 
     // Free the stack
     stack_destroy(&p_stack);
@@ -446,7 +446,7 @@ bool test_peek ( int (*stack_constructor)(stack **), char *expected_value, resul
     stack_constructor(&p_stack);
 
     // Peek the stack
-    result = stack_peek(p_stack, &result_value);
+    result = (result_t) stack_peek(p_stack, &result_value);
 
     if (result == zero)
         goto done;
@@ -478,10 +478,9 @@ bool test_pop ( int (*stack_constructor)(stack **), char *expected_value, size_t
     // Pop N times
     for (size_t i = 0; i < pops; i++)
     {
-        result = stack_pop(p_stack, &result_value);
+        result = (result_t) stack_pop(p_stack, &result_value);
 
-        if ( result == zero )
-            goto done;
+        if ( result == zero ) goto done;
     }
 
     if ( result == zero )
